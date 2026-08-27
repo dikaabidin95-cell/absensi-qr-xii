@@ -2,10 +2,14 @@
 <html lang="id">
 
 <head>
+
   <meta charset="UTF-8">
 
   <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+        content="width=device-width,
+                 initial-scale=1.0,
+                 maximum-scale=1.0,
+                 user-scalable=no">
 
   <title>Scanner Absensi XII</title>
 
@@ -13,6 +17,11 @@
           type="text/javascript"></script>
 
   <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 16px;
@@ -53,8 +62,13 @@
       color: #777;
     }
 
-    .terbaca {
+    .hadir {
       color: #168a3a;
+      font-weight: bold;
+    }
+
+    .sudah {
+      color: #d68b00;
       font-weight: bold;
     }
 
@@ -62,8 +76,11 @@
       color: #c62828;
       font-weight: bold;
     }
+
   </style>
+
 </head>
+
 
 <body>
 
@@ -76,106 +93,377 @@
   <div id="reader"></div>
 
   <div id="hasil">
+
     <div class="menunggu">
       MENUNGGU SCAN
     </div>
+
   </div>
 
-  <script>
 
-    let scanner = null;
-    let sedangMemproses = false;
+<script>
 
-    function mulaiScanner() {
+  /*
+   * ==================================================
+   * URL APPS SCRIPT
+   * ==================================================
+   */
 
-      scanner = new Html5Qrcode("reader");
+  const API_URL =
+    "https://script.google.com/macros/s/AKfycbylhLu8WiAbGpZEQZwDHruv7GSNyftt4HYiR3M6wBwLOrptEFktBh2I5ytx8uOSViYklA/exec/exec";
 
-      scanner.start(
-        {
-          facingMode: "environment"
-        },
 
-        {
-          fps: 10,
-          qrbox: {
-            width: 250,
-            height: 250
-          }
-        },
+  let scanner = null;
 
-        function(decodedText) {
+  let sedangMemproses = false;
 
-          if (sedangMemproses) {
-            return;
-          }
 
-          sedangMemproses = true;
+  /*
+   * ==================================================
+   * MULAI SCANNER
+   * ==================================================
+   */
 
-          document.getElementById("hasil").innerHTML = `
-            <div class="terbaca">
-              ● QR TERBACA
-            </div>
+  function mulaiScanner() {
 
-            <br>
+    scanner = new Html5Qrcode("reader");
 
-            ID:
-            <strong>${decodedText}</strong>
-          `;
 
-          bunyi();
+    scanner.start(
 
-          setTimeout(function() {
+      {
+        facingMode: "environment"
+      },
 
-            sedangMemproses = false;
+      {
+        fps: 10,
 
-            document.getElementById("hasil").innerHTML = `
-              <div class="menunggu">
-                MENUNGGU SCAN
-              </div>
-            `;
-
-          }, 1200);
-
-        },
-
-        function(errorMessage) {
-          // Scanner terus mencari QR.
+        qrbox: {
+          width: 250,
+          height: 250
         }
 
-      ).catch(function(error) {
+      },
 
-        console.error(error);
 
-        document.getElementById("hasil").innerHTML = `
-          <div class="error">
-            KAMERA GAGAL DIAKTIFKAN
-          </div>
-          <br>
-          ${error}
-        `;
+      function(decodedText) {
 
-      });
+        if (sedangMemproses) {
+          return;
+        }
+
+        sedangMemproses = true;
+
+
+        kirimKeAppsScript(decodedText);
+
+      },
+
+
+      function(errorMessage) {
+
+        /*
+         * Tidak melakukan apa-apa.
+         *
+         * Scanner tetap aktif mencari QR.
+         */
+
+      }
+
+    )
+
+    .catch(function(error) {
+
+      console.error(error);
+
+      tampilkanError(
+        "Kamera tidak dapat diaktifkan."
+      );
+
+    });
+
+  }
+
+
+  /*
+   * ==================================================
+   * KIRIM QR KE APPS SCRIPT
+   * ==================================================
+   */
+
+  function kirimKeAppsScript(qrId) {
+
+
+    /*
+     * Membuat nama callback unik.
+     */
+
+    const namaCallback =
+      "absensiCallback_" +
+      Date.now();
+
+
+    /*
+     * Fungsi callback menerima
+     * jawaban dari Apps Script.
+     */
+
+    window[namaCallback] = function(data) {
+
+      try {
+
+        prosesHasil(data, qrId);
+
+      }
+
+      finally {
+
+        delete window[namaCallback];
+
+      }
+
+    };
+
+
+    /*
+     * Membuat alamat API.
+     */
+
+    const url =
+      API_URL +
+      "?qr=" +
+      encodeURIComponent(qrId) +
+      "&callback=" +
+      namaCallback;
+
+
+    /*
+     * Menggunakan elemen SCRIPT
+     * agar browser dapat menerima
+     * JSONP dari Apps Script.
+     */
+
+    const script =
+      document.createElement("script");
+
+
+    script.src = url;
+
+
+    script.onerror = function() {
+
+      tampilkanError(
+        "Gagal menghubungi server absensi."
+      );
+
+      delete window[namaCallback];
+
+      setTimeout(function() {
+
+        sedangMemproses = false;
+
+      }, 1200);
+
+    };
+
+
+    document.body.appendChild(script);
+
+
+    /*
+     * Hapus elemen script setelah beberapa detik.
+     */
+
+    setTimeout(function() {
+
+      if (script.parentNode) {
+
+        script.parentNode.removeChild(script);
+
+      }
+
+    }, 5000);
+
+  }
+
+
+  /*
+   * ==================================================
+   * HASIL DARI APPS SCRIPT
+   * ==================================================
+   */
+
+  function prosesHasil(data, qrId) {
+
+
+    if (data.status === "HADIR") {
+
+
+      document.getElementById("hasil").innerHTML = `
+
+        <div class="hadir">
+          ● HADIR
+        </div>
+
+        <br>
+
+        <strong>
+          ${data.nama}
+        </strong>
+
+        <br>
+
+        ${data.kelas}
+
+      `;
+
+
+      bunyi();
+
 
     }
 
 
-    function bunyi() {
+    else if (data.status === "SUDAH_ABSEN") {
+
+
+      document.getElementById("hasil").innerHTML = `
+
+        <div class="sudah">
+          ● SUDAH ABSEN
+        </div>
+
+        <br>
+
+        <strong>
+          ${data.nama}
+        </strong>
+
+        <br>
+
+        ${data.kelas}
+
+      `;
+
+
+      bunyi();
+
+
+    }
+
+
+    else if (data.status === "QR_TIDAK_DIKENAL") {
+
+
+      document.getElementById("hasil").innerHTML = `
+
+        <div class="error">
+          ● QR TIDAK DIKENAL
+        </div>
+
+        <br>
+
+        ID:
+        <strong>
+          ${qrId}
+        </strong>
+
+      `;
+
+    }
+
+
+    else if (data.status === "SCANNER_NONAKTIF") {
+
+
+      document.getElementById("hasil").innerHTML = `
+
+        <div class="error">
+          ● SCANNER NONAKTIF
+        </div>
+
+      `;
+
+    }
+
+
+    else {
+
+
+      document.getElementById("hasil").innerHTML = `
+
+        <div class="error">
+          ● TERJADI KESALAHAN
+        </div>
+
+      `;
+
+    }
+
+
+    /*
+     * Setelah 1,2 detik,
+     * kembali ke MENUNGGU SCAN.
+     *
+     * KAMERA TIDAK DIHENTIKAN.
+     */
+
+    setTimeout(function() {
+
+      sedangMemproses = false;
+
+      document.getElementById("hasil").innerHTML = `
+
+        <div class="menunggu">
+          MENUNGGU SCAN
+        </div>
+
+      `;
+
+    }, 1200);
+
+  }
+
+
+  /*
+   * ==================================================
+   * BUNYI
+   * ==================================================
+   */
+
+  function bunyi() {
+
+    try {
 
       const context =
         new (window.AudioContext ||
              window.webkitAudioContext)();
 
+
+      if (context.state === "suspended") {
+
+        context.resume();
+
+      }
+
+
       const oscillator =
         context.createOscillator();
+
 
       const gain =
         context.createGain();
 
+
       oscillator.connect(gain);
+
       gain.connect(context.destination);
 
+
       oscillator.frequency.value = 880;
+
       gain.gain.value = 0.15;
+
 
       oscillator.start();
 
@@ -185,12 +473,51 @@
 
     }
 
+    catch (error) {
 
-    window.onload = function() {
-      mulaiScanner();
-    };
+      console.log(
+        "Bunyi tidak tersedia:",
+        error
+      );
 
-  </script>
+    }
+
+  }
+
+
+  /*
+   * ==================================================
+   * ERROR
+   * ==================================================
+   */
+
+  function tampilkanError(pesan) {
+
+    document.getElementById("hasil").innerHTML = `
+
+      <div class="error">
+        ● ${pesan}
+      </div>
+
+    `;
+
+  }
+
+
+  /*
+   * ==================================================
+   * MULAI
+   * ==================================================
+   */
+
+  window.onload = function() {
+
+    mulaiScanner();
+
+  };
+
+</script>
+
 
 </body>
 
