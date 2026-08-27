@@ -24,57 +24,134 @@
 
     body {
       margin: 0;
-      padding: 16px;
+      padding: 10px 16px 20px;
       background: #f5f7fa;
       font-family: Arial, sans-serif;
       text-align: center;
     }
 
     h1 {
-      margin: 8px 0 4px;
+      margin: 4px 0 2px;
       font-size: 25px;
+      line-height: 1.2;
     }
 
     .subtitle {
       color: #666;
-      margin-bottom: 15px;
+      font-size: 15px;
+      margin-bottom: 8px;
     }
+
+    /*
+     * KOTAK SCANNER
+     * Diposisikan lebih ke atas
+     */
 
     #reader {
       width: 100%;
-      max-width: 500px;
-      margin: auto;
+      max-width: 430px;
+      margin: 0 auto;
       background: #000;
       border-radius: 14px;
       overflow: hidden;
     }
 
+    /*
+     * HASIL SCAN
+     */
+
     #hasil {
-      max-width: 500px;
-      margin: 15px auto 0;
-      padding: 18px;
-      background: white;
-      border-radius: 12px;
-      font-size: 20px;
+      width: 100%;
+      max-width: 430px;
+      min-height: 125px;
+
+      margin: 10px auto 0;
+
+      padding: 16px 12px;
+
+      background: #ffffff;
+
+      border-radius: 14px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      font-size: 18px;
+
+      line-height: 1.35;
     }
+
+    /*
+     * MENUNGGU SCAN
+     */
 
     .menunggu {
       color: #777;
+      font-size: 18px;
+      font-weight: normal;
     }
+
+    /*
+     * HADIR
+     */
 
     .hadir {
       color: #168a3a;
+      font-size: 30px;
       font-weight: bold;
+      line-height: 1.1;
+      margin-bottom: 8px;
     }
+
+    /*
+     * NAMA SISWA
+     */
+
+    .nama-siswa {
+      color: #111;
+      font-size: 22px;
+      font-weight: bold;
+      line-height: 1.25;
+
+      width: 100%;
+
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
+
+    /*
+     * KELAS
+     */
+
+    .kelas-siswa {
+      color: #555;
+      font-size: 17px;
+      margin-top: 5px;
+    }
+
+    /*
+     * SUDAH ABSEN
+     */
 
     .sudah {
       color: #d68b00;
+      font-size: 28px;
       font-weight: bold;
+      line-height: 1.1;
+      margin-bottom: 8px;
     }
+
+    /*
+     * ERROR
+     */
 
     .error {
       color: #c62828;
+      font-size: 22px;
       font-weight: bold;
+      line-height: 1.2;
     }
 
   </style>
@@ -84,13 +161,23 @@
 
 <body>
 
-  <h1>ABSENSI KIMIA XII</h1>
+
+  <h1>
+    ABSENSI KIMIA XII
+  </h1>
+
 
   <div class="subtitle">
     Arahkan QR siswa ke kamera
   </div>
 
+
+  <!-- KAMERA -->
+
   <div id="reader"></div>
+
+
+  <!-- HASIL SCAN -->
 
   <div id="hasil">
 
@@ -103,6 +190,7 @@
 
 <script>
 
+
   /*
    * ==================================================
    * URL APPS SCRIPT
@@ -110,7 +198,7 @@
    */
 
   const API_URL =
-    "https://script.google.com/macros/s/AKfycbylhLu8WiAbGpZEQZwDHruv7GSNyftt4HYiR3M6wBwLOrptEFktBh2I5ytx8uOSViYklA/exec/exec";
+    "https://script.google.com/a/macros/guru.sma.belajar.id/s/AKfycbxy_OJolL3936qcPsBAQ2mTrBdgwvDXPoTP-omVG_GxMtpYjJGXCjSQhls89OUMRJN1Jw/exec";
 
 
   let scanner = null;
@@ -126,7 +214,8 @@
 
   function mulaiScanner() {
 
-    scanner = new Html5Qrcode("reader");
+    scanner =
+      new Html5Qrcode("reader");
 
 
     scanner.start(
@@ -134,6 +223,7 @@
       {
         facingMode: "environment"
       },
+
 
       {
         fps: 10,
@@ -148,9 +238,13 @@
 
       function(decodedText) {
 
+
         if (sedangMemproses) {
+
           return;
+
         }
+
 
         sedangMemproses = true;
 
@@ -163,9 +257,7 @@
       function(errorMessage) {
 
         /*
-         * Tidak melakukan apa-apa.
-         *
-         * Scanner tetap aktif mencari QR.
+         * Scanner tetap aktif.
          */
 
       }
@@ -174,11 +266,14 @@
 
     .catch(function(error) {
 
+
       console.error(error);
 
+
       tampilkanError(
-        "Kamera tidak dapat diaktifkan."
+        "KAMERA TIDAK DAPAT DIAKTIFKAN"
       );
+
 
     });
 
@@ -194,40 +289,32 @@
   function kirimKeAppsScript(qrId) {
 
 
-    /*
-     * Membuat nama callback unik.
-     */
-
     const namaCallback =
       "absensiCallback_" +
       Date.now();
 
 
-    /*
-     * Fungsi callback menerima
-     * jawaban dari Apps Script.
-     */
-
-    window[namaCallback] = function(data) {
-
-      try {
-
-        prosesHasil(data, qrId);
-
-      }
-
-      finally {
-
-        delete window[namaCallback];
-
-      }
-
-    };
+    window[namaCallback] =
+      function(data) {
 
 
-    /*
-     * Membuat alamat API.
-     */
+        try {
+
+          prosesHasil(
+            data,
+            qrId
+          );
+
+        }
+
+        finally {
+
+          delete window[namaCallback];
+
+        }
+
+      };
+
 
     const url =
       API_URL +
@@ -237,12 +324,6 @@
       namaCallback;
 
 
-    /*
-     * Menggunakan elemen SCRIPT
-     * agar browser dapat menerima
-     * JSONP dari Apps Script.
-     */
-
     const script =
       document.createElement("script");
 
@@ -250,37 +331,40 @@
     script.src = url;
 
 
-    script.onerror = function() {
+    script.onerror =
+      function() {
 
-      tampilkanError(
-        "Gagal menghubungi server absensi."
-      );
 
-      delete window[namaCallback];
+        tampilkanError(
+          "GAGAL MENGHUBUNGI SERVER"
+        );
 
-      setTimeout(function() {
 
-        sedangMemproses = false;
+        delete window[namaCallback];
 
-      }, 1200);
 
-    };
+        setTimeout(function() {
+
+          sedangMemproses = false;
+
+        }, 3000);
+
+
+      };
 
 
     document.body.appendChild(script);
 
 
-    /*
-     * Hapus elemen script setelah beberapa detik.
-     */
-
     setTimeout(function() {
+
 
       if (script.parentNode) {
 
         script.parentNode.removeChild(script);
 
       }
+
 
     }, 5000);
 
@@ -296,6 +380,12 @@
   function prosesHasil(data, qrId) {
 
 
+    /*
+     * ================================================
+     * HADIR
+     * ================================================
+     */
+
     if (data.status === "HADIR") {
 
 
@@ -305,26 +395,31 @@
           ● HADIR
         </div>
 
-        <br>
-
-        <strong>
+        <div class="nama-siswa">
           ${data.nama}
-        </strong>
+        </div>
 
-        <br>
-
-        ${data.kelas}
+        <div class="kelas-siswa">
+          ${data.kelas}
+        </div>
 
       `;
 
 
       bunyi();
 
-
     }
 
 
-    else if (data.status === "SUDAH_ABSEN") {
+    /*
+     * ================================================
+     * SUDAH ABSEN
+     * ================================================
+     */
+
+    else if (
+      data.status === "SUDAH_ABSEN"
+    ) {
 
 
       document.getElementById("hasil").innerHTML = `
@@ -333,26 +428,31 @@
           ● SUDAH ABSEN
         </div>
 
-        <br>
-
-        <strong>
+        <div class="nama-siswa">
           ${data.nama}
-        </strong>
+        </div>
 
-        <br>
-
-        ${data.kelas}
+        <div class="kelas-siswa">
+          ${data.kelas}
+        </div>
 
       `;
 
 
       bunyi();
 
-
     }
 
 
-    else if (data.status === "QR_TIDAK_DIKENAL") {
+    /*
+     * ================================================
+     * QR TIDAK DIKENAL
+     * ================================================
+     */
+
+    else if (
+      data.status === "QR_TIDAK_DIKENAL"
+    ) {
 
 
       document.getElementById("hasil").innerHTML = `
@@ -361,19 +461,28 @@
           ● QR TIDAK DIKENAL
         </div>
 
-        <br>
-
-        ID:
-        <strong>
-          ${qrId}
-        </strong>
+        <div style="
+          margin-top:8px;
+          font-size:17px;
+          color:#555;
+        ">
+          ID: <strong>${qrId}</strong>
+        </div>
 
       `;
 
     }
 
 
-    else if (data.status === "SCANNER_NONAKTIF") {
+    /*
+     * ================================================
+     * SCANNER NONAKTIF
+     * ================================================
+     */
+
+    else if (
+      data.status === "SCANNER_NONAKTIF"
+    ) {
 
 
       document.getElementById("hasil").innerHTML = `
@@ -386,6 +495,12 @@
 
     }
 
+
+    /*
+     * ================================================
+     * ERROR LAIN
+     * ================================================
+     */
 
     else {
 
@@ -402,15 +517,16 @@
 
 
     /*
-     * Setelah 1,2 detik,
-     * kembali ke MENUNGGU SCAN.
-     *
-     * KAMERA TIDAK DIHENTIKAN.
+     * ================================================
+     * TAMPILKAN HASIL SELAMA 3 DETIK
+     * ================================================
      */
 
     setTimeout(function() {
 
+
       sedangMemproses = false;
+
 
       document.getElementById("hasil").innerHTML = `
 
@@ -420,7 +536,8 @@
 
       `;
 
-    }, 1200);
+
+    }, 3000);
 
   }
 
@@ -433,14 +550,20 @@
 
   function bunyi() {
 
+
     try {
 
+
       const context =
-        new (window.AudioContext ||
-             window.webkitAudioContext)();
+        new (
+          window.AudioContext ||
+          window.webkitAudioContext
+        )();
 
 
-      if (context.state === "suspended") {
+      if (
+        context.state === "suspended"
+      ) {
 
         context.resume();
 
@@ -457,28 +580,37 @@
 
       oscillator.connect(gain);
 
-      gain.connect(context.destination);
+      gain.connect(
+        context.destination
+      );
 
 
-      oscillator.frequency.value = 880;
+      oscillator.frequency.value =
+        880;
 
-      gain.gain.value = 0.15;
+
+      gain.gain.value =
+        0.15;
 
 
       oscillator.start();
+
 
       oscillator.stop(
         context.currentTime + 0.12
       );
 
+
     }
 
     catch (error) {
+
 
       console.log(
         "Bunyi tidak tersedia:",
         error
       );
+
 
     }
 
@@ -493,7 +625,10 @@
 
   function tampilkanError(pesan) {
 
-    document.getElementById("hasil").innerHTML = `
+
+    document.getElementById(
+      "hasil"
+    ).innerHTML = `
 
       <div class="error">
         ● ${pesan}
@@ -510,11 +645,13 @@
    * ==================================================
    */
 
-  window.onload = function() {
+  window.onload =
+    function() {
 
-    mulaiScanner();
+      mulaiScanner();
 
-  };
+    };
+
 
 </script>
 
