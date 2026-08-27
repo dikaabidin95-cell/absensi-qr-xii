@@ -1,7 +1,197 @@
-Name your file... → index.html
-
-Area putih:
 <!DOCTYPE html>
 <html lang="id">
-...
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>Scanner Absensi XII</title>
+
+  <script src="https://unpkg.com/html5-qrcode"
+          type="text/javascript"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 16px;
+      background: #f5f7fa;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 8px 0 4px;
+      font-size: 25px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    #reader {
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
+      background: #000;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    #hasil {
+      max-width: 500px;
+      margin: 15px auto 0;
+      padding: 18px;
+      background: white;
+      border-radius: 12px;
+      font-size: 20px;
+    }
+
+    .menunggu {
+      color: #777;
+    }
+
+    .terbaca {
+      color: #168a3a;
+      font-weight: bold;
+    }
+
+    .error {
+      color: #c62828;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>ABSENSI KIMIA XII</h1>
+
+  <div class="subtitle">
+    Arahkan QR siswa ke kamera
+  </div>
+
+  <div id="reader"></div>
+
+  <div id="hasil">
+    <div class="menunggu">
+      MENUNGGU SCAN
+    </div>
+  </div>
+
+  <script>
+
+    let scanner = null;
+    let sedangMemproses = false;
+
+    function mulaiScanner() {
+
+      scanner = new Html5Qrcode("reader");
+
+      scanner.start(
+        {
+          facingMode: "environment"
+        },
+
+        {
+          fps: 10,
+          qrbox: {
+            width: 250,
+            height: 250
+          }
+        },
+
+        function(decodedText) {
+
+          if (sedangMemproses) {
+            return;
+          }
+
+          sedangMemproses = true;
+
+          document.getElementById("hasil").innerHTML = `
+            <div class="terbaca">
+              ● QR TERBACA
+            </div>
+
+            <br>
+
+            ID:
+            <strong>${decodedText}</strong>
+          `;
+
+          bunyi();
+
+          setTimeout(function() {
+
+            sedangMemproses = false;
+
+            document.getElementById("hasil").innerHTML = `
+              <div class="menunggu">
+                MENUNGGU SCAN
+              </div>
+            `;
+
+          }, 1200);
+
+        },
+
+        function(errorMessage) {
+          // Scanner terus mencari QR.
+        }
+
+      ).catch(function(error) {
+
+        console.error(error);
+
+        document.getElementById("hasil").innerHTML = `
+          <div class="error">
+            KAMERA GAGAL DIAKTIFKAN
+          </div>
+          <br>
+          ${error}
+        `;
+
+      });
+
+    }
+
+
+    function bunyi() {
+
+      const context =
+        new (window.AudioContext ||
+             window.webkitAudioContext)();
+
+      const oscillator =
+        context.createOscillator();
+
+      const gain =
+        context.createGain();
+
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+
+      oscillator.frequency.value = 880;
+      gain.gain.value = 0.15;
+
+      oscillator.start();
+
+      oscillator.stop(
+        context.currentTime + 0.12
+      );
+
+    }
+
+
+    window.onload = function() {
+      mulaiScanner();
+    };
+
+  </script>
+
+</body>
+
 </html>
