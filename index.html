@@ -42,10 +42,9 @@
       margin-bottom: 8px;
     }
 
-    /*
-     * KOTAK SCANNER
-     * Diposisikan lebih ke atas
-     */
+    /* ================================
+       KOTAK SCANNER
+       ================================ */
 
     #reader {
       width: 100%;
@@ -56,18 +55,19 @@
       overflow: hidden;
     }
 
-    /*
-     * HASIL SCAN
-     */
+    /* ================================
+       HASIL SCAN
+       ================================ */
 
     #hasil {
       width: 100%;
       max-width: 430px;
-      min-height: 125px;
+
+      min-height: 135px;
 
       margin: 10px auto 0;
 
-      padding: 16px 12px;
+      padding: 14px 10px;
 
       background: #ffffff;
 
@@ -78,14 +78,12 @@
       justify-content: center;
       align-items: center;
 
-      font-size: 18px;
-
-      line-height: 1.35;
+      overflow: hidden;
     }
 
-    /*
-     * MENUNGGU SCAN
-     */
+    /* ================================
+       MENUNGGU
+       ================================ */
 
     .menunggu {
       color: #777;
@@ -93,65 +91,105 @@
       font-weight: normal;
     }
 
-    /*
-     * HADIR
-     */
+    /* ================================
+       STATUS HADIR
+       ================================ */
 
     .hadir {
       color: #168a3a;
       font-size: 30px;
       font-weight: bold;
       line-height: 1.1;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
     }
 
-    /*
-     * NAMA SISWA
-     */
+    /* ================================
+       NAMA ADAPTIF
+       ================================ */
 
     .nama-siswa {
       color: #111;
-      font-size: 22px;
-      font-weight: bold;
-      line-height: 1.25;
 
       width: 100%;
+      max-width: 100%;
 
-      overflow-wrap: break-word;
+      font-weight: bold;
+
+      line-height: 1.18;
+
+      text-align: center;
+
+      overflow-wrap: anywhere;
+
       word-break: normal;
+
+      padding: 0 4px;
     }
 
     /*
-     * KELAS
+     * Nama pendek
      */
+
+    .nama-pendek {
+      font-size: 22px;
+    }
+
+    /*
+     * Nama sedang
+     */
+
+    .nama-sedang {
+      font-size: 20px;
+    }
+
+    /*
+     * Nama panjang
+     */
+
+    .nama-panjang {
+      font-size: 18px;
+    }
+
+    /*
+     * Nama sangat panjang
+     */
+
+    .nama-sangat-panjang {
+      font-size: 16px;
+    }
+
+    /* ================================
+       KELAS
+       ================================ */
 
     .kelas-siswa {
       color: #555;
-      font-size: 17px;
+      font-size: 16px;
       margin-top: 5px;
     }
 
-    /*
-     * SUDAH ABSEN
-     */
+    /* ================================
+       SUDAH ABSEN
+       ================================ */
 
     .sudah {
       color: #d68b00;
       font-size: 28px;
       font-weight: bold;
       line-height: 1.1;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
     }
 
-    /*
-     * ERROR
-     */
+    /* ================================
+       ERROR
+       ================================ */
 
     .error {
       color: #c62828;
-      font-size: 22px;
+      font-size: 21px;
       font-weight: bold;
       line-height: 1.2;
+      padding: 0 8px;
     }
 
   </style>
@@ -172,12 +210,16 @@
   </div>
 
 
-  <!-- KAMERA -->
+  <!-- ================================
+       KAMERA
+       ================================ -->
 
   <div id="reader"></div>
 
 
-  <!-- HASIL SCAN -->
+  <!-- ================================
+       HASIL
+       ================================ -->
 
   <div id="hasil">
 
@@ -191,11 +233,9 @@
 <script>
 
 
-  /*
-   * ==================================================
-   * URL APPS SCRIPT
-   * ==================================================
-   */
+  /* ====================================
+     URL APPS SCRIPT
+     ==================================== */
 
   const API_URL =
     "https://script.google.com/a/macros/guru.sma.belajar.id/s/AKfycbxy_OJolL3936qcPsBAQ2mTrBdgwvDXPoTP-omVG_GxMtpYjJGXCjSQhls89OUMRJN1Jw/exec";
@@ -206,13 +246,12 @@
   let sedangMemproses = false;
 
 
-  /*
-   * ==================================================
-   * MULAI SCANNER
-   * ==================================================
-   */
+  /* ====================================
+     MULAI SCANNER
+     ==================================== */
 
   function mulaiScanner() {
+
 
     scanner =
       new Html5Qrcode("reader");
@@ -280,11 +319,9 @@
   }
 
 
-  /*
-   * ==================================================
-   * KIRIM QR KE APPS SCRIPT
-   * ==================================================
-   */
+  /* ====================================
+     KIRIM QR KE APPS SCRIPT
+     ==================================== */
 
   function kirimKeAppsScript(qrId) {
 
@@ -371,31 +408,70 @@
   }
 
 
-  /*
-   * ==================================================
-   * HASIL DARI APPS SCRIPT
-   * ==================================================
-   */
+  /* ====================================
+     MENENTUKAN UKURAN NAMA
+     ==================================== */
+
+  function kelasNama(nama) {
+
+
+    const jumlahKarakter =
+      nama.length;
+
+
+    if (jumlahKarakter <= 20) {
+
+      return "nama-pendek";
+
+    }
+
+
+    if (jumlahKarakter <= 28) {
+
+      return "nama-sedang";
+
+    }
+
+
+    if (jumlahKarakter <= 38) {
+
+      return "nama-panjang";
+
+    }
+
+
+    return "nama-sangat-panjang";
+
+  }
+
+
+  /* ====================================
+     HASIL DARI APPS SCRIPT
+     ==================================== */
 
   function prosesHasil(data, qrId) {
 
 
-    /*
-     * ================================================
-     * HADIR
-     * ================================================
-     */
+    /* --------------------------------
+       HADIR
+       -------------------------------- */
 
     if (data.status === "HADIR") {
 
 
-      document.getElementById("hasil").innerHTML = `
+      const kelasNamaSiswa =
+        kelasNama(data.nama);
+
+
+      document.getElementById(
+        "hasil"
+      ).innerHTML = `
 
         <div class="hadir">
           ● HADIR
         </div>
 
-        <div class="nama-siswa">
+        <div class="nama-siswa ${kelasNamaSiswa}">
           ${data.nama}
         </div>
 
@@ -411,24 +487,28 @@
     }
 
 
-    /*
-     * ================================================
-     * SUDAH ABSEN
-     * ================================================
-     */
+    /* --------------------------------
+       SUDAH ABSEN
+       -------------------------------- */
 
     else if (
       data.status === "SUDAH_ABSEN"
     ) {
 
 
-      document.getElementById("hasil").innerHTML = `
+      const kelasNamaSiswa =
+        kelasNama(data.nama);
+
+
+      document.getElementById(
+        "hasil"
+      ).innerHTML = `
 
         <div class="sudah">
           ● SUDAH ABSEN
         </div>
 
-        <div class="nama-siswa">
+        <div class="nama-siswa ${kelasNamaSiswa}">
           ${data.nama}
         </div>
 
@@ -444,18 +524,18 @@
     }
 
 
-    /*
-     * ================================================
-     * QR TIDAK DIKENAL
-     * ================================================
-     */
+    /* --------------------------------
+       QR TIDAK DIKENAL
+       -------------------------------- */
 
     else if (
       data.status === "QR_TIDAK_DIKENAL"
     ) {
 
 
-      document.getElementById("hasil").innerHTML = `
+      document.getElementById(
+        "hasil"
+      ).innerHTML = `
 
         <div class="error">
           ● QR TIDAK DIKENAL
@@ -466,7 +546,10 @@
           font-size:17px;
           color:#555;
         ">
-          ID: <strong>${qrId}</strong>
+          ID:
+          <strong>
+            ${qrId}
+          </strong>
         </div>
 
       `;
@@ -474,18 +557,18 @@
     }
 
 
-    /*
-     * ================================================
-     * SCANNER NONAKTIF
-     * ================================================
-     */
+    /* --------------------------------
+       SCANNER NONAKTIF
+       -------------------------------- */
 
     else if (
       data.status === "SCANNER_NONAKTIF"
     ) {
 
 
-      document.getElementById("hasil").innerHTML = `
+      document.getElementById(
+        "hasil"
+      ).innerHTML = `
 
         <div class="error">
           ● SCANNER NONAKTIF
@@ -496,16 +579,16 @@
     }
 
 
-    /*
-     * ================================================
-     * ERROR LAIN
-     * ================================================
-     */
+    /* --------------------------------
+       ERROR LAIN
+       -------------------------------- */
 
     else {
 
 
-      document.getElementById("hasil").innerHTML = `
+      document.getElementById(
+        "hasil"
+      ).innerHTML = `
 
         <div class="error">
           ● TERJADI KESALAHAN
@@ -516,11 +599,9 @@
     }
 
 
-    /*
-     * ================================================
-     * TAMPILKAN HASIL SELAMA 3 DETIK
-     * ================================================
-     */
+    /* --------------------------------
+       TAMPIL 3 DETIK
+       -------------------------------- */
 
     setTimeout(function() {
 
@@ -528,7 +609,9 @@
       sedangMemproses = false;
 
 
-      document.getElementById("hasil").innerHTML = `
+      document.getElementById(
+        "hasil"
+      ).innerHTML = `
 
         <div class="menunggu">
           MENUNGGU SCAN
@@ -542,11 +625,9 @@
   }
 
 
-  /*
-   * ==================================================
-   * BUNYI
-   * ==================================================
-   */
+  /* ====================================
+     BUNYI
+     ==================================== */
 
   function bunyi() {
 
@@ -617,11 +698,9 @@
   }
 
 
-  /*
-   * ==================================================
-   * ERROR
-   * ==================================================
-   */
+  /* ====================================
+     ERROR
+     ==================================== */
 
   function tampilkanError(pesan) {
 
@@ -639,11 +718,9 @@
   }
 
 
-  /*
-   * ==================================================
-   * MULAI
-   * ==================================================
-   */
+  /* ====================================
+     MULAI
+     ==================================== */
 
   window.onload =
     function() {
