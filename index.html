@@ -11,7 +11,7 @@
                  maximum-scale=1.0,
                  user-scalable=no">
 
-  <title>Scanner Absensi XII</title>
+  <title>Absensi TKA Kimia 2026</title>
 
   <script src="https://unpkg.com/html5-qrcode"
           type="text/javascript"></script>
@@ -28,7 +28,7 @@
 
       margin: 0;
 
-      padding: 10px 16px 20px;
+      padding: 10px 14px 20px;
 
       background: #f5f7fa;
 
@@ -61,9 +61,9 @@
     }
 
 
-    /* =========================================
-       AREA SCANNER
-       ========================================= */
+    /* =================================================
+       AREA UTAMA SCANNER
+       ================================================= */
 
     #scanner-wrapper {
 
@@ -74,6 +74,10 @@
       margin: 0 auto;
 
       position: relative;
+
+      overflow: hidden;
+
+      border-radius: 14px;
 
     }
 
@@ -88,26 +92,26 @@
 
       overflow: hidden;
 
-      transition: filter 0.15s ease;
+      transition:
+        filter 0.18s ease;
 
     }
 
 
-    /*
-     * Ketika sedang memproses,
-     * tampilan kamera dibuat blur.
-     */
+    /* =================================================
+       BLUR SAAT MEMPROSES
+       ================================================= */
 
     #reader.processing {
 
-      filter: blur(6px);
+      filter: blur(7px);
 
     }
 
 
-    /* =========================================
+    /* =================================================
        OVERLAY MEMPROSES
-       ========================================= */
+       ================================================= */
 
     #processing-overlay {
 
@@ -127,11 +131,13 @@
 
       padding: 20px;
 
-      background: rgba(255, 255, 255, 0.72);
+      background:
+        rgba(10, 25, 30, 0.58);
 
-      border-radius: 14px;
+      backdrop-filter:
+        blur(4px);
 
-      backdrop-filter: blur(2px);
+      color: white;
 
     }
 
@@ -143,21 +149,53 @@
     }
 
 
+    .processing-card {
+
+      width: 88%;
+
+      max-width: 330px;
+
+      padding: 25px 18px;
+
+      border:
+
+        3px solid #f5bd27;
+
+      border-radius: 20px;
+
+      background:
+
+        rgba(20, 25, 25, 0.62);
+
+      box-shadow:
+
+        0 8px 30px
+        rgba(0,0,0,0.25);
+
+    }
+
+
     .processing-icon {
 
-      width: 48px;
+      width: 52px;
 
-      height: 48px;
+      height: 52px;
 
-      border: 5px solid #f0c419;
+      margin: 0 auto 13px;
 
-      border-top-color: transparent;
+      border:
+
+        6px solid #f5bd27;
+
+      border-top-color:
+
+        transparent;
 
       border-radius: 50%;
 
-      animation: putar 0.9s linear infinite;
+      animation:
 
-      margin-bottom: 12px;
+        putar 0.9s linear infinite;
 
     }
 
@@ -185,235 +223,418 @@
 
       font-weight: bold;
 
-      color: #b07a00;
-
-      line-height: 1.1;
+      color: #ffd044;
 
     }
 
 
     .processing-text {
 
-      margin-top: 8px;
+      margin-top: 10px;
 
       font-size: 16px;
 
-      color: #444;
-
-      line-height: 1.35;
-
-      max-width: 300px;
+      line-height: 1.4;
 
     }
 
 
     .processing-note {
 
-      margin-top: 14px;
+      margin-top: 17px;
 
-      padding: 9px 14px;
+      padding: 10px 12px;
 
-      border: 1px solid #aaa;
+      border:
+
+        1px solid
+        rgba(255,255,255,0.5);
 
       border-radius: 10px;
 
-      background: rgba(255,255,255,0.75);
-
       font-size: 14px;
 
-      color: #333;
-
-      line-height: 1.3;
+      line-height: 1.4;
 
     }
 
 
-    /* =========================================
-       HASIL SCAN
-       ========================================= */
+    /* =================================================
+       OVERLAY HASIL
+       ================================================= */
 
-    #hasil {
+    #result-overlay {
 
-      width: 100%;
+      position: absolute;
 
-      max-width: 430px;
+      inset: 0;
 
-      min-height: 135px;
+      z-index: 30;
 
-      margin: 10px auto 0;
-
-      padding: 14px 10px;
-
-      background: #ffffff;
-
-      border-radius: 14px;
-
-      display: flex;
-
-      flex-direction: column;
-
-      justify-content: center;
+      display: none;
 
       align-items: center;
 
-      overflow: hidden;
+      justify-content: center;
 
-    }
+      flex-direction: column;
 
+      padding: 22px 16px;
 
-    /* =========================================
-       MENUNGGU
-       ========================================= */
+      color: white;
 
-    .menunggu {
+      background:
 
-      color: #777;
+        linear-gradient(
+          180deg,
+          #082c31 0%,
+          #061b20 100%
+        );
 
-      font-size: 18px;
-
-      font-weight: normal;
-
-    }
-
-
-    /* =========================================
-       HADIR
-       ========================================= */
-
-    .hadir {
-
-      color: #168a3a;
-
-      font-size: 30px;
-
-      font-weight: bold;
-
-      line-height: 1.1;
-
-      margin-bottom: 7px;
-
-    }
-
-
-    /* =========================================
-       NAMA ADAPTIF
-       ========================================= */
-
-    .nama-siswa {
-
-      color: #111;
-
-      width: 100%;
-
-      max-width: 100%;
-
-      font-weight: bold;
-
-      line-height: 1.18;
+      border-radius: 14px;
 
       text-align: center;
 
+    }
+
+
+    #result-overlay.active {
+
+      display: flex;
+
+    }
+
+
+    /* =================================================
+       IKON HADIR
+       ================================================= */
+
+    .check-circle {
+
+      width: 72px;
+
+      height: 72px;
+
+      border:
+
+        5px solid #65e85b;
+
+      border-radius: 50%;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      margin-bottom: 9px;
+
+      box-shadow:
+
+        0 0 18px
+        rgba(101,232,91,0.35);
+
+    }
+
+
+    .check-mark {
+
+      font-size: 48px;
+
+      line-height: 1;
+
+      font-weight: bold;
+
+      color: #65e85b;
+
+      transform:
+        translateY(-2px);
+
+    }
+
+
+    .result-status {
+
+      font-size: 34px;
+
+      font-weight: bold;
+
+      color: #65e85b;
+
+      line-height: 1.05;
+
+    }
+
+
+    .result-id {
+
+      margin-top: 10px;
+
+      font-size: 20px;
+
+      font-weight: bold;
+
+      color: white;
+
+    }
+
+
+    .result-name {
+
+      margin-top: 5px;
+
+      width: 100%;
+
+      font-weight: bold;
+
+      line-height: 1.2;
+
+      color: white;
+
+      padding: 0 5px;
+
       overflow-wrap: anywhere;
-
-      word-break: normal;
-
-      padding: 0 4px;
 
     }
 
 
     .nama-pendek {
 
-      font-size: 22px;
+      font-size: 21px;
 
     }
 
 
     .nama-sedang {
 
-      font-size: 20px;
+      font-size: 19px;
 
     }
 
 
     .nama-panjang {
 
-      font-size: 18px;
+      font-size: 17px;
 
     }
 
 
     .nama-sangat-panjang {
 
-      font-size: 16px;
+      font-size: 15px;
 
     }
 
 
-    /* =========================================
-       KELAS
-       ========================================= */
-
-    .kelas-siswa {
-
-      color: #555;
-
-      font-size: 16px;
+    .result-class {
 
       margin-top: 5px;
 
+      font-size: 16px;
+
+      color: #e3eeee;
+
     }
 
 
-    /* =========================================
+    .result-line {
+
+      width: 88%;
+
+      max-width: 330px;
+
+      margin: 14px auto 11px;
+
+      border: 0;
+
+      border-top:
+
+        1px solid
+        rgba(255,255,255,0.25);
+
+    }
+
+
+    .result-info {
+
+      width: 100%;
+
+      max-width: 330px;
+
+      text-align: left;
+
+      font-size: 15px;
+
+      line-height: 1.65;
+
+    }
+
+
+    .info-row {
+
+      display: grid;
+
+      grid-template-columns:
+        28px 1fr auto;
+
+      align-items: center;
+
+      column-gap: 5px;
+
+    }
+
+
+    .info-icon {
+
+      font-size: 17px;
+
+    }
+
+
+    .info-label {
+
+      color: #d8e6e8;
+
+    }
+
+
+    .info-value {
+
+      color: white;
+
+      font-weight: bold;
+
+      text-align: right;
+
+    }
+
+
+    .success-note {
+
+      width: 100%;
+
+      max-width: 330px;
+
+      margin-top: 12px;
+
+      padding: 9px 10px;
+
+      border:
+
+        2px solid #65e85b;
+
+      border-radius: 10px;
+
+      background:
+
+        rgba(25,100,45,0.25);
+
+      font-size: 14px;
+
+      line-height: 1.35;
+
+      color: white;
+
+    }
+
+
+    /* =================================================
        SUDAH ABSEN
-       ========================================= */
+       ================================================= */
 
-    .sudah {
+    .duplicate-icon {
 
-      color: #d68b00;
+      width: 68px;
 
-      font-size: 28px;
+      height: 68px;
 
-      font-weight: bold;
+      border:
 
-      line-height: 1.1;
+        5px solid #f4b63e;
 
-      margin-bottom: 7px;
+      border-radius: 50%;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      margin-bottom: 10px;
 
     }
 
 
-    /* =========================================
+    .duplicate-mark {
+
+      font-size: 38px;
+
+      font-weight: bold;
+
+      color: #f4b63e;
+
+    }
+
+
+    .duplicate-status {
+
+      font-size: 27px;
+
+      font-weight: bold;
+
+      color: #f4b63e;
+
+    }
+
+
+    /* =================================================
        ERROR
-       ========================================= */
+       ================================================= */
 
-    .error {
+    .error-icon {
 
-      color: #c62828;
+      font-size: 42px;
 
-      font-size: 21px;
+      color: #ff6b6b;
 
-      font-weight: bold;
-
-      line-height: 1.2;
-
-      padding: 0 8px;
+      margin-bottom: 8px;
 
     }
 
 
-    /* =========================================
+    .error-title {
+
+      font-size: 24px;
+
+      font-weight: bold;
+
+      color: #ff6b6b;
+
+    }
+
+
+    .error-text {
+
+      margin-top: 8px;
+
+      font-size: 16px;
+
+      color: white;
+
+    }
+
+
+    /* =================================================
        MOBILE
-       ========================================= */
+       ================================================= */
 
     @media (max-width: 360px) {
 
       body {
 
-        padding-left: 10px;
+        padding-left: 8px;
 
-        padding-right: 10px;
+        padding-right: 8px;
 
       }
 
@@ -432,30 +653,51 @@
       }
 
 
-      .processing-title {
+      .result-status {
 
-        font-size: 24px;
+        font-size: 30px;
 
       }
 
 
-      .processing-text {
+      .result-id {
+
+        font-size: 18px;
+
+      }
+
+
+      .nama-pendek {
+
+        font-size: 19px;
+
+      }
+
+
+      .nama-sedang {
+
+        font-size: 17px;
+
+      }
+
+
+      .nama-panjang {
+
+        font-size: 15px;
+
+      }
+
+
+      .nama-sangat-panjang {
 
         font-size: 14px;
 
       }
 
 
-      .hadir {
+      .result-info {
 
-        font-size: 27px;
-
-      }
-
-
-      .sudah {
-
-        font-size: 25px;
+        font-size: 14px;
 
       }
 
@@ -470,67 +712,74 @@
 
 
   <h1>
-    ABSENSI KIMIA XII
+    ABSENSI TKA KIMIA 2026
   </h1>
 
 
   <div class="subtitle">
-    Arahkan QR siswa ke kamera
+    Scanner QR Siswa
   </div>
 
 
-  <!-- =========================================
-       SCANNER
-       ========================================= -->
+  <!-- =================================================
+       SCANNER WRAPPER
+       ================================================= -->
 
   <div id="scanner-wrapper">
 
 
+    <!-- KAMERA -->
+
     <div id="reader"></div>
 
 
-    <!-- =======================================
-         OVERLAY MEMPROSES
-         ======================================= -->
+    <!-- =================================================
+         MEMPROSES
+         ================================================= -->
 
     <div id="processing-overlay">
 
 
-      <div class="processing-icon"></div>
+      <div class="processing-card">
 
 
-      <div class="processing-title">
-        MEMPROSES...
-      </div>
+        <div class="processing-icon"></div>
 
 
-      <div class="processing-text">
-        Data sedang diverifikasi dan dicatat.
-      </div>
+        <div class="processing-title">
+          MEMPROSES...
+        </div>
 
 
-      <div class="processing-note">
-        QR boleh dilepas.
-        <br>
-        Tunggu hasil absensi.
+        <div class="processing-text">
+          Data sedang diverifikasi
+          dan dicatat.
+        </div>
+
+
+        <div class="processing-note">
+          Anda boleh mencabut
+          <br>
+          QR code dan menunggu hasil.
+        </div>
+
+
       </div>
 
 
     </div>
 
 
-  </div>
+    <!-- =================================================
+         HASIL AKHIR
+         ================================================= -->
 
+    <div id="result-overlay">
 
-  <!-- =========================================
-       HASIL
-       ========================================= -->
+      <!-- Isi hasil dibuat oleh JavaScript -->
 
-  <div id="hasil">
-
-    <div class="menunggu">
-      MENUNGGU SCAN
     </div>
+
 
   </div>
 
@@ -539,9 +788,9 @@
 <script>
 
 
-  /* =========================================
-     URL APPS SCRIPT
-     ========================================= */
+  // ====================================================
+  // URL APPS SCRIPT
+  // ====================================================
 
   const API_URL =
     "https://script.google.com/a/macros/guru.sma.belajar.id/s/AKfycbxy_OJolL3936qcPsBAQ2mTrBdgwvDXPoTP-omVG_GxMtpYjJGXCjSQhls89OUMRJN1Jw/exec";
@@ -552,9 +801,9 @@
   let sedangMemproses = false;
 
 
-  /* =========================================
-     MULAI SCANNER
-     ========================================= */
+  // ====================================================
+  // MULAI SCANNER
+  // ====================================================
 
   function mulaiScanner() {
 
@@ -588,11 +837,6 @@
       function(decodedText) {
 
 
-        /*
-         * Jika sedang memproses,
-         * abaikan pembacaan QR berikutnya.
-         */
-
         if (sedangMemproses) {
 
           return;
@@ -604,20 +848,20 @@
 
 
         /*
-         * LANGSUNG tampilkan
-         * MEMPROSES...
-         *
-         * Tidak menunggu server.
+         * LANGSUNG pindah ke
+         * MEMPROSES.
          */
 
         tampilkanMemproses();
 
 
         /*
-         * Kirim QR ke Apps Script.
+         * Kirim QR ke server.
          */
 
-        kirimKeAppsScript(decodedText);
+        kirimKeAppsScript(
+          decodedText
+        );
 
       },
 
@@ -625,9 +869,8 @@
       function(errorMessage) {
 
         /*
-         * Tidak melakukan apa-apa.
-         *
-         * Scanner tetap aktif.
+         * Abaikan error pembacaan
+         * selama kamera aktif.
          */
 
       }
@@ -641,7 +884,8 @@
 
 
       tampilkanError(
-        "KAMERA TIDAK DAPAT DIAKTIFKAN"
+        "KAMERA TIDAK DAPAT DIAKTIFKAN",
+        "Pastikan izin kamera diberikan."
       );
 
 
@@ -650,16 +894,12 @@
   }
 
 
-  /* =========================================
-     TAMPILKAN MEMPROSES
-     ========================================= */
+  // ====================================================
+  // MEMPROSES
+  // ====================================================
 
   function tampilkanMemproses() {
 
-
-    /*
-     * Blur kamera.
-     */
 
     document
       .getElementById("reader")
@@ -667,22 +907,17 @@
       .add("processing");
 
 
-    /*
-     * Tampilkan overlay.
-     */
-
     document
       .getElementById("processing-overlay")
       .classList
       .add("active");
 
-
   }
 
 
-  /* =========================================
-     HILANGKAN MEMPROSES
-     ========================================= */
+  // ====================================================
+  // SEMBUNYIKAN MEMPROSES
+  // ====================================================
 
   function sembunyikanMemproses() {
 
@@ -698,13 +933,12 @@
       .classList
       .remove("active");
 
-
   }
 
 
-  /* =========================================
-     KIRIM QR KE APPS SCRIPT
-     ========================================= */
+  // ====================================================
+  // KIRIM KE APPS SCRIPT
+  // ====================================================
 
   function kirimKeAppsScript(qrId) {
 
@@ -755,28 +989,24 @@
       function() {
 
 
-        sembunyikanMemproses();
-
-
         tampilkanError(
-          "GAGAL MENGHUBUNGI SERVER"
+
+          "GAGAL MENGHUBUNGI SERVER",
+
+          "Periksa koneksi internet."
+
         );
 
 
         delete window[namaCallback];
 
 
-        setTimeout(function() {
-
-          sedangMemproses = false;
-
-        }, 3000);
-
-
       };
 
 
-    document.body.appendChild(script);
+    document.body.appendChild(
+      script
+    );
 
 
     setTimeout(function() {
@@ -784,7 +1014,9 @@
 
       if (script.parentNode) {
 
-        script.parentNode.removeChild(script);
+        script.parentNode.removeChild(
+          script
+        );
 
       }
 
@@ -794,32 +1026,32 @@
   }
 
 
-  /* =========================================
-     UKURAN NAMA
-     ========================================= */
+  // ====================================================
+  // KELAS NAMA ADAPTIF
+  // ====================================================
 
   function kelasNama(nama) {
 
 
-    const jumlahKarakter =
+    const panjang =
       nama.length;
 
 
-    if (jumlahKarakter <= 20) {
+    if (panjang <= 20) {
 
       return "nama-pendek";
 
     }
 
 
-    if (jumlahKarakter <= 28) {
+    if (panjang <= 28) {
 
       return "nama-sedang";
 
     }
 
 
-    if (jumlahKarakter <= 38) {
+    if (panjang <= 38) {
 
       return "nama-panjang";
 
@@ -831,26 +1063,26 @@
   }
 
 
-  /* =========================================
-     HASIL DARI APPS SCRIPT
-     ========================================= */
+  // ====================================================
+  // HASIL
+  // ====================================================
 
-  function prosesHasil(data, qrId) {
+  function prosesHasil(
+    data,
+    qrId
+  ) {
 
-
-    /*
-     * Hapus overlay MEMPROSES
-     * terlebih dahulu.
-     */
 
     sembunyikanMemproses();
 
 
-    /* =======================================
-       HADIR
-       ======================================= */
+    // ================================================
+    // HADIR
+    // ================================================
 
-    if (data.status === "HADIR") {
+    if (
+      data.status === "HADIR"
+    ) {
 
 
       const kelasNamaSiswa =
@@ -858,32 +1090,128 @@
 
 
       document.getElementById(
-        "hasil"
+        "result-overlay"
       ).innerHTML = `
 
-        <div class="hadir">
-          ● HADIR
+        <div class="check-circle">
+
+          <div class="check-mark">
+            ✓
+          </div>
+
         </div>
 
-        <div class="nama-siswa ${kelasNamaSiswa}">
+
+        <div class="result-status">
+          HADIR
+        </div>
+
+
+        <div class="result-id">
+          ${data.id}
+        </div>
+
+
+        <div class="
+          result-name
+          ${kelasNamaSiswa}
+        ">
           ${data.nama}
         </div>
 
-        <div class="kelas-siswa">
+
+        <div class="result-class">
           ${data.kelas}
+        </div>
+
+
+        <hr class="result-line">
+
+
+        <div class="result-info">
+
+
+          <div class="info-row">
+
+            <div class="info-icon">
+              📅
+            </div>
+
+            <div class="info-label">
+              Tanggal
+            </div>
+
+            <div class="info-value">
+              ${data.tanggal}
+            </div>
+
+          </div>
+
+
+          <div class="info-row">
+
+            <div class="info-icon">
+              📖
+            </div>
+
+            <div class="info-label">
+              Pertemuan
+            </div>
+
+            <div class="info-value">
+              ${data.pertemuan}
+            </div>
+
+          </div>
+
+
+          <div class="info-row">
+
+            <div class="info-icon">
+              🕐
+            </div>
+
+            <div class="info-label">
+              Waktu
+            </div>
+
+            <div class="info-value">
+              ${data.waktu}
+            </div>
+
+          </div>
+
+
+        </div>
+
+
+        <div class="success-note">
+
+          Absensi berhasil dicatat.
+          <br>
+          Terima kasih.
+
         </div>
 
       `;
 
 
+      tampilkanHasil();
+
+
       bunyi();
+
+
+      kembaliKeScanner(
+        3000
+      );
 
     }
 
 
-    /* =======================================
-       SUDAH ABSEN
-       ======================================= */
+    // ================================================
+    // SUDAH ABSEN
+    // ================================================
 
     else if (
       data.status === "SUDAH_ABSEN"
@@ -895,32 +1223,103 @@
 
 
       document.getElementById(
-        "hasil"
+        "result-overlay"
       ).innerHTML = `
 
-        <div class="sudah">
-          ● SUDAH ABSEN
+        <div class="duplicate-icon">
+
+          <div class="duplicate-mark">
+            !
+          </div>
+
         </div>
 
-        <div class="nama-siswa ${kelasNamaSiswa}">
+
+        <div class="duplicate-status">
+          SUDAH ABSEN
+        </div>
+
+
+        <div class="result-id">
+          ${data.id}
+        </div>
+
+
+        <div class="
+          result-name
+          ${kelasNamaSiswa}
+        ">
           ${data.nama}
         </div>
 
-        <div class="kelas-siswa">
+
+        <div class="result-class">
           ${data.kelas}
         </div>
+
+
+        <hr class="result-line">
+
+
+        <div class="result-info">
+
+
+          <div class="info-row">
+
+            <div class="info-icon">
+              📅
+            </div>
+
+            <div class="info-label">
+              Tanggal
+            </div>
+
+            <div class="info-value">
+              ${data.tanggal}
+            </div>
+
+          </div>
+
+
+          <div class="info-row">
+
+            <div class="info-icon">
+              📖
+            </div>
+
+            <div class="info-label">
+              Pertemuan
+            </div>
+
+            <div class="info-value">
+              ${data.pertemuan}
+            </div>
+
+          </div>
+
+
+        </div>
+
 
       `;
 
 
+      tampilkanHasil();
+
+
       bunyi();
+
+
+      kembaliKeScanner(
+        3000
+      );
 
     }
 
 
-    /* =======================================
-       QR TIDAK DIKENAL
-       ======================================= */
+    // ================================================
+    // QR TIDAK DIKENAL
+    // ================================================
 
     else if (
       data.status === "QR_TIDAK_DIKENAL"
@@ -928,18 +1327,18 @@
 
 
       document.getElementById(
-        "hasil"
+        "result-overlay"
       ).innerHTML = `
 
-        <div class="error">
-          ● QR TIDAK DIKENAL
+        <div class="error-icon">
+          !
         </div>
 
-        <div style="
-          margin-top:8px;
-          font-size:17px;
-          color:#555;
-        ">
+        <div class="error-title">
+          QR TIDAK DIKENAL
+        </div>
+
+        <div class="error-text">
           ID:
           <strong>
             ${qrId}
@@ -948,12 +1347,20 @@
 
       `;
 
+
+      tampilkanHasil();
+
+
+      kembaliKeScanner(
+        3000
+      );
+
     }
 
 
-    /* =======================================
-       SCANNER NONAKTIF
-       ======================================= */
+    // ================================================
+    // SCANNER NONAKTIF
+    // ================================================
 
     else if (
       data.status === "SCANNER_NONAKTIF"
@@ -961,69 +1368,100 @@
 
 
       document.getElementById(
-        "hasil"
+        "result-overlay"
       ).innerHTML = `
 
-        <div class="error">
-          ● SCANNER NONAKTIF
+        <div class="error-icon">
+          !
+        </div>
+
+        <div class="error-title">
+          SCANNER NONAKTIF
         </div>
 
       `;
 
+
+      tampilkanHasil();
+
+
+      kembaliKeScanner(
+        3000
+      );
+
     }
 
 
-    /* =======================================
-       ERROR LAIN
-       ======================================= */
+    // ================================================
+    // ERROR LAIN
+    // ================================================
 
     else {
 
 
-      document.getElementById(
-        "hasil"
-      ).innerHTML = `
-
-        <div class="error">
-          ● TERJADI KESALAHAN
-        </div>
-
-      `;
+      tampilkanError(
+        "TERJADI KESALAHAN",
+        "Silakan coba kembali."
+      );
 
     }
 
+  }
 
-    /*
-     * =======================================
-     * HASIL DITAMPILKAN 3 DETIK
-     * =======================================
-     */
+
+  // ====================================================
+  // TAMPILKAN HASIL PENUH
+  // ====================================================
+
+  function tampilkanHasil() {
+
+
+    document
+      .getElementById(
+        "result-overlay"
+      )
+      .classList
+      .add("active");
+
+  }
+
+
+  // ====================================================
+  // KEMBALI KE SCANNER
+  // ====================================================
+
+  function kembaliKeScanner(
+    waktu
+  ) {
+
 
     setTimeout(function() {
+
+
+      document
+        .getElementById(
+          "result-overlay"
+        )
+        .classList
+        .remove("active");
+
+
+      document.getElementById(
+        "result-overlay"
+      ).innerHTML = "";
 
 
       sedangMemproses = false;
 
 
-      document.getElementById(
-        "hasil"
-      ).innerHTML = `
-
-        <div class="menunggu">
-          MENUNGGU SCAN
-        </div>
-
-      `;
-
-
-    }, 3000);
+    }, waktu);
 
   }
 
 
-  /* =========================================
-     BUNYI
-     ========================================= */
+  // ====================================================
+  // BUNYI
+  // ====================================================
 
   function bunyi() {
 
@@ -1088,38 +1526,68 @@
         error
       );
 
-
     }
 
   }
 
 
-  /* =========================================
-     ERROR
-     ========================================= */
+  // ====================================================
+  // ERROR
+  // ====================================================
 
-  function tampilkanError(pesan) {
+  function tampilkanError(
+    judul,
+    keterangan
+  ) {
 
 
     sembunyikanMemproses();
 
 
     document.getElementById(
-      "hasil"
+      "result-overlay"
     ).innerHTML = `
 
-      <div class="error">
-        ● ${pesan}
+      <div class="error-icon">
+        !
+      </div>
+
+      <div class="error-title">
+        ${judul}
+      </div>
+
+      <div class="error-text">
+        ${keterangan}
       </div>
 
     `;
 
+
+    tampilkanHasil();
+
+
+    setTimeout(function() {
+
+
+      document
+        .getElementById(
+          "result-overlay"
+        )
+        .classList
+        .remove("active");
+
+
+      sedangMemproses = false;
+
+
+    }, 3000);
+
   }
 
 
-  /* =========================================
-     MULAI
-     ========================================= */
+  // ====================================================
+  // MULAI
+  // ====================================================
 
   window.onload =
     function() {
