@@ -303,10 +303,25 @@
 
     #result-overlay.active {
 
-      display: flex;
+  display: flex;
 
-    }
+  opacity: 1;
 
+  visibility: visible;
+
+  transition:
+    opacity 0.15s ease;
+
+}
+    #result-overlay.fade-out {
+
+  opacity: 0;
+
+  visibility: hidden;
+
+  pointer-events: none;
+
+}
 
     /* =================================================
        ICON HADIR
@@ -1455,31 +1470,68 @@
   // ==================================================
 
   function kembaliKeScanner(
-    waktu
-  ) {
+  waktu
+) {
 
+
+  setTimeout(function() {
+
+
+    const hasil =
+      document.getElementById(
+        "result-overlay"
+      );
+
+
+    /*
+     * Kamera sudah tetap ON
+     * di belakang overlay.
+     *
+     * Kita hanya membuat
+     * layar HADIR menghilang
+     * dengan sangat cepat.
+     */
+
+    hasil.classList.add(
+      "fade-out"
+    );
+
+
+    /*
+     * Setelah fade-out selesai,
+     * lepaskan overlay sepenuhnya.
+     */
 
     setTimeout(function() {
 
 
-      document
-        .getElementById("result-overlay")
-        .classList
-        .remove("active");
+      hasil.classList.remove(
+        "active"
+      );
 
 
-      document.getElementById(
-        "result-overlay"
-      ).innerHTML = "";
+      hasil.classList.remove(
+        "fade-out"
+      );
 
+
+      hasil.innerHTML = "";
+
+
+      /*
+       * Scanner siap menerima
+       * QR siswa berikutnya.
+       */
 
       sedangMemproses = false;
 
 
-    }, waktu);
+    }, 180);
 
-  }
 
+  }, waktu);
+
+}
 
   // ==================================================
   // BUNYI
